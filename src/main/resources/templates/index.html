@@ -8,7 +8,7 @@
     function sendData(){
         let xhr = new XMLHttpRequest();
         let hostname = location.hostname;
-        xhr.open('POST', 'http://' + hostname + ':8083/historicalWeather', true);
+        xhr.open('POST', 'http://' + hostname + ':8083/find_tickets', true);
         xhr.setRequestHeader('Access-Control-Allow-Origin', '*');
         xhr.setRequestHeader('Access-Control-Allow-Methods', 'POST');
         xhr.setRequestHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
@@ -34,11 +34,22 @@
             let ticketTo = ticketData[0];
             let ticketBack = ticketData[1];
             let ticketContent = `
-                <div>
-                    <p class="result_content">
+                <div class="result_content">
+                    <div>
+                        <p>
+                            ${ticketTo['arrivalCountry']}.${ticketTo['arrival']} -> ${ticketTo['departureCountry']}.${ticketTo['departure']}
+                        </p>
+                    </div>
+                    <div>
+                        <p>
+                            ${ticketTo['arrivalDate']}.${ticketTo['arrivalHour']} -> ${ticketTo['departureDate']}.${ticketTo['departureHour']}
+                        </p>
+                    </div>
+                    <div>
                         ${ticketTo['price']}
-                    </p>
+                    </div>
                 </div>
+
                 `;
             resultContainer.insertAdjacentHTML('beforeend', ticketContent);
         }
@@ -53,6 +64,7 @@
         display: inline-block;
         vertical-align: top;
         border-radius: 10px;
+        margin: 5px;
     }
 </style>
 

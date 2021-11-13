@@ -27,7 +27,7 @@ public class TicketController {
         this.ticketSearch = ticketSearchAmadeusService;
     }
 
-    @RequestMapping(value = "/historicalWeather", method = RequestMethod.POST)
+    @RequestMapping(value = "/find_tickets", method = RequestMethod.POST)
     public List<Ticket[]> getWeather(@RequestBody JSONObject flightData) throws IOException, ParseException, NoTicketThisDataException, WrongInputDataException {
         System.out.println(flightData);
         String originIATA = DataGenerator.getIATA("Москва");

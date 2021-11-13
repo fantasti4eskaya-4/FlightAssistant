@@ -40,10 +40,6 @@ public class TicketSearchAmadeusService {
         JSONObject root = (JSONObject) jsonParser.parse(reader);
         JSONArray data = (JSONArray) root.get("data");
 
-        FileOutputStream out = new FileOutputStream("kek.json");
-        out.write(root.toString().getBytes());
-        out.close();
-
         JSONArray flightOffersSearch = new JSONArray();
         for (int i = 0; i < data.size(); i++) {
             flightOffersSearch.add(data.get(i));
