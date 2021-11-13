@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<script>
+    function sendData(){
+        let xhr = new XMLHttpRequest();
+        let hostname = location.hostname;
+        xhr.open('POST', 'http://localhost:8083/historicalWeather', true);
+        xhr.setRequestHeader('Access-Control-Allow-Origin', '*');
+        xhr.setRequestHeader('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+        xhr.setRequestHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        let requestStr = "request body";
+        requestStr = requestStr.replaceAll(/\"/g, '\\"');
+        xhr.onload = function () {
+            if (xhr.status === 200) {
+                let data = JSON.parse(xhr.responseText);
+                console.log(data);
+            }
+        }
+        let messageStr = "{\"sender\" : \"" + "text body" + "\" , \"query\" : \"" + requestStr + "\"}";
+        console.log(messageStr);
+        xhr.send(messageStr);
+    }
+</script>
+<body>
+<div>
+    Кароче клацаете тута и чекайте консоль. У вас там будет массив из билетов из москвы Казань через 2 дня. не спамьте кнопку, все робит просто поиск занимает время
+</div>
+<div style="margin-top: 10px">
+    <input type="button" value="Send test request" onclick="sendData()">
+</div>
+
+</body>
+
+</html>
