@@ -64,6 +64,7 @@ public class TicketSearchAmadeusService {
         response.close();
         client.close();
 
+        System.out.println(priceRoot);
         JSONObject priceRootData = (JSONObject) priceRoot.get("data");
         JSONArray flightOffers = (JSONArray) priceRootData.get("flightOffers");
 

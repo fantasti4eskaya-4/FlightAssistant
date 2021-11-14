@@ -4,17 +4,112 @@
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
 <script>
-    function sendData(){
+    function autocomplete(inp, arr) {
+        var currentFocus;
+        inp.addEventListener("input", function(e) {
+            var a, b, i, val = this.value;
+            closeAllLists();
+            if (!val) { return false;}
+            currentFocus = -1;
+            a = document.createElement("DIV");
+            a.setAttribute("id", this.id + "autocomplete-list");
+            a.setAttribute("class", "autocomplete-items");
+            this.parentNode.appendChild(a);
+            for (i = 0; i < arr.length; i++) {
+                if (arr[i].substr(0, val.length).toUpperCase() == val.toUpperCase()) {
+                    b = document.createElement("DIV");
+                    b.innerHTML = "<strong>" + arr[i].substr(0, val.length) + "</strong>";
+                    b.innerHTML += arr[i].substr(val.length);
+                    b.innerHTML += "<input type='hidden' value='" + arr[i] + "'>";
+                    b.addEventListener("click", function(e) {
+                        inp.value = this.getElementsByTagName("input")[0].value;
+                        closeAllLists();
+                    });
+                    a.appendChild(b);
+                }
+            }
+        });
+        inp.addEventListener("keydown", function(e) {
+            var x = document.getElementById(this.id + "autocomplete-list");
+            if (x) x = x.getElementsByTagName("div");
+            if (e.keyCode == 40) {
+                currentFocus++;
+                addActive(x);
+            } else if (e.keyCode == 38) {
+                currentFocus--;
+                addActive(x);
+            } else if (e.keyCode == 13) {
+                e.preventDefault();
+                if (currentFocus > -1) {
+                    if (x) x[currentFocus].click();
+                }
+            }
+        });
+        function addActive(x) {
+            if (!x) return false;
+            removeActive(x);
+            if (currentFocus >= x.length) currentFocus = 0;
+            if (currentFocus < 0) currentFocus = (x.length - 1);
+            x[currentFocus].classList.add("autocomplete-active");
+        }
+        function removeActive(x) {
+            for (var i = 0; i < x.length; i++) {
+                x[i].classList.remove("autocomplete-active");
+            }
+        }
+        function closeAllLists(elmnt) {
+            var x = document.getElementsByClassName("autocomplete-items");
+            for (var i = 0; i < x.length; i++) {
+                if (elmnt != x[i] && elmnt != inp) {
+                    x[i].parentNode.removeChild(x[i]);
+                }
+            }
+        }
+        document.addEventListener("click", function (e) {
+            closeAllLists(e.target);
+        });
+    }
+
+    window.onload = function () {
+        let citiesNames = localStorage.getItem('citiesNames');
+        if (citiesNames != null){
+            autocomplete(document.getElementById("geo_from"), JSON.parse(localStorage.getItem("citiesNames")));
+            autocomplete(document.getElementById("geo_to"), JSON.parse(localStorage.getItem("citiesNames")));
+            return;
+        }
+
         let xhr = new XMLHttpRequest();
         let hostname = location.hostname;
-        xhr.open('POST', 'http://' + hostname + ':8083/find_tickets', true);
+        xhr.open('POST', 'http://' + hostname + ':8080/load_cities', true);
         xhr.setRequestHeader('Access-Control-Allow-Origin', '*');
         xhr.setRequestHeader('Access-Control-Allow-Methods', 'POST');
         xhr.setRequestHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
         xhr.setRequestHeader('Content-Type', 'application/json');
-        let requestStr = "request body";
-        requestStr = requestStr.replaceAll(/\"/g, '\\"');
+        xhr.onload = function () {
+            if (xhr.status === 200) {
+                let data = JSON.parse(xhr.responseText);
+                console.log(data);
+                localStorage.setItem("citiesNames", JSON.stringify(data));
+                autocomplete(document.getElementById("geo_from"), JSON.parse(localStorage.getItem("citiesNames")));
+                autocomplete(document.getElementById("geo_to"), JSON.parse(localStorage.getItem("citiesNames")));
+            }
+        }
+        xhr.send();
+    }
+
+
+    function sendData(){
+        let xhr = new XMLHttpRequest();
+        let hostname = location.hostname;
+        xhr.open('POST', 'http://' + hostname + ':8080/find_tickets', true);
+        xhr.setRequestHeader('Access-Control-Allow-Origin', '*');
+        xhr.setRequestHeader('Access-Control-Allow-Methods', 'POST');
+        xhr.setRequestHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+        xhr.setRequestHeader('Content-Type', 'application/json');
         xhr.onload = function () {
             if (xhr.status === 200) {
                 let data = JSON.parse(xhr.responseText);
@@ -22,7 +117,18 @@
                 showTickets(data);
             }
         }
-        let messageStr = "{\"sender\" : \"" + "text body" + "\" , \"query\" : \"" + requestStr + "\"}";
+
+        let origin = document.getElementById("geo_from").value;
+        let destination = document.getElementById("geo_to").value;
+        let originDate = document.getElementById("date_from").value;
+        let destinationDate = document.getElementById("date_to").value;
+
+        let messageStr = "{" +
+            " \"origin\" : \"" + origin + "\" ," +
+            " \"destination\" : \"" + destination + "\" ," +
+            " \"originDate\" : \"" + originDate + "\" ," +
+            " \"destinationDate\" : \"" + destinationDate + "\"" +
+            "}";
         console.log(messageStr);
         xhr.send(messageStr);
     }
@@ -69,12 +175,47 @@
 </style>
 
 <body>
-<div>
-    Кароче клацаете тута и чекайте консоль. У вас там будет массив из билетов из москвы Казань через 2 дня. не спамьте кнопку, все робит просто поиск занимает время
+
+<div class="head" style="display: flex; text-align: center;">
+    <div id="geo" style="display: flex;">
+        <div id="from">
+            <label>Откуда:</label><br>
+            <input type="text" id="geo_from">
+        </div>
+        <div id="to">
+            <label>Куда:</label><br>
+            <input type="text" id="geo_to">
+        </div>
+
+    </div>
+
+    <div id="date" style="display: flex;">
+        <div id="from">
+            <label>Дата вылета:</label><br>
+            <input type="date" id="date_from">
+        </div>
+        <div id="to">
+            <label>Дата обратно:</label><br>
+            <input type="date" id="date_to">
+        </div>
+
+    </div>
 </div>
-<div style="margin-top: 10px">
-    <input type="button" value="Send test request" onclick="sendData()">
+
+<div class="prehead" style="display: flex;">
+    <div class="someInfo">
+        <div id="replace">
+            <label>Максимальное число пересадок:</label><br>
+            <input type="text" id="que_replace">
+        </div>
+        <div id="cost">
+            <label>Максимальная цена:</label><br>
+            <input type="text" id="max_cost">
+        </div>
+    </div>
+    <button style="width: 5%;" onclick="sendData()">Найти</button>
 </div>
+
 <div id = "search_result"></div>
 </body>
 
