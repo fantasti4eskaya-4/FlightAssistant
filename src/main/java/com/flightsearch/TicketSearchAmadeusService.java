@@ -42,8 +42,9 @@ public class TicketSearchAmadeusService {
 
         JSONArray flightOffersSearch = new JSONArray();
         for (int i = 0; i < data.size(); i++) {
+            System.out.println(data.get(i));
             flightOffersSearch.add(data.get(i));
-            if (flightOffersSearch.size() == 6)
+            if (flightOffersSearch.size() == 12)
                 break;
         }
         if (flightOffersSearch.size() == 0) {
@@ -55,19 +56,20 @@ public class TicketSearchAmadeusService {
         dataPrice.put("flightOffers", flightOffersSearch);
         pricePostBody.put("data", dataPrice);
 
-        CloseableHttpClient client = HttpClients.createDefault();
+        /*CloseableHttpClient client = HttpClients.createDefault();
         HttpPost httpPost = URLCreator.getFlightPriceConnection();
         StringEntity entity = new StringEntity(pricePostBody.toString());
         httpPost.setEntity(entity);
         CloseableHttpResponse response = client.execute(httpPost);
         JSONObject priceRoot = (JSONObject) jsonParser.parse(new InputStreamReader(response.getEntity().getContent()));
         response.close();
-        client.close();
+        client.close();*/
 
-        System.out.println(priceRoot);
-        JSONObject priceRootData = (JSONObject) priceRoot.get("data");
+        JSONObject priceRootData = (JSONObject) pricePostBody.get("data");
         JSONArray flightOffers = (JSONArray) priceRootData.get("flightOffers");
 
+        System.out.println("__");
+        System.out.println(flightOffers);
         List<Ticket[]> ticketList = new ArrayList<>();
         for (int i = 0; i < flightOffers.size(); i++) {
             JSONObject obj = (JSONObject) flightOffers.get(i);
