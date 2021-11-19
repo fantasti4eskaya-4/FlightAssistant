@@ -10,10 +10,12 @@
 <script>
     function autocomplete(inp, arr) {
         var currentFocus;
-        inp.addEventListener("input", function(e) {
+        inp.addEventListener("input", function (e) {
             var a, b, i, val = this.value;
             closeAllLists();
-            if (!val) { return false;}
+            if (!val) {
+                return false;
+            }
             currentFocus = -1;
             a = document.createElement("DIV");
             a.setAttribute("id", this.id + "autocomplete-list");
@@ -25,7 +27,7 @@
                     b.innerHTML = "<strong>" + arr[i].substr(0, val.length) + "</strong>";
                     b.innerHTML += arr[i].substr(val.length);
                     b.innerHTML += "<input type='hidden' value='" + arr[i] + "'>";
-                    b.addEventListener("click", function(e) {
+                    b.addEventListener("click", function (e) {
                         inp.value = this.getElementsByTagName("input")[0].value;
                         closeAllLists();
                     });
@@ -33,7 +35,7 @@
                 }
             }
         });
-        inp.addEventListener("keydown", function(e) {
+        inp.addEventListener("keydown", function (e) {
             var x = document.getElementById(this.id + "autocomplete-list");
             if (x) x = x.getElementsByTagName("div");
             if (e.keyCode == 40) {
@@ -49,6 +51,7 @@
                 }
             }
         });
+
         function addActive(x) {
             if (!x) return false;
             removeActive(x);
@@ -56,11 +59,13 @@
             if (currentFocus < 0) currentFocus = (x.length - 1);
             x[currentFocus].classList.add("autocomplete-active");
         }
+
         function removeActive(x) {
             for (var i = 0; i < x.length; i++) {
                 x[i].classList.remove("autocomplete-active");
             }
         }
+
         function closeAllLists(elmnt) {
             var x = document.getElementsByClassName("autocomplete-items");
             for (var i = 0; i < x.length; i++) {
@@ -69,6 +74,7 @@
                 }
             }
         }
+
         document.addEventListener("click", function (e) {
             closeAllLists(e.target);
         });
@@ -76,7 +82,7 @@
 
     window.onload = function () {
         let citiesNames = localStorage.getItem('citiesNames');
-        if (citiesNames != null){
+        if (citiesNames != null) {
             autocomplete(document.getElementById("geo_from"), JSON.parse(localStorage.getItem("citiesNames")));
             autocomplete(document.getElementById("geo_to"), JSON.parse(localStorage.getItem("citiesNames")));
             return;
@@ -102,7 +108,7 @@
     }
 
 
-    function sendData(){
+    function sendData() {
         let xhr = new XMLHttpRequest();
         let hostname = location.hostname;
         xhr.open('POST', 'http://' + hostname + ':8080/find_tickets', true);
@@ -133,9 +139,9 @@
         xhr.send(messageStr);
     }
 
-    function showTickets(data){
+    function showTickets(data) {
         let resultContainer = document.getElementById("search_result");
-        for (let i = 0 ; i < data.length; i++){
+        for (let i = 0; i < data.length; i++) {
             let ticketData = data[i];
             let ticketTo = ticketData[0];
             let ticketBack = ticketData[1];
@@ -164,7 +170,7 @@
 </script>
 
 <style>
-    .result_content{
+    .result_content {
         border: 1px solid #000000;
         padding: 10px;
         display: inline-block;
@@ -172,18 +178,20 @@
         border-radius: 10px;
         margin: 5px;
     }
-    .block{
-        min-height: 250px; 
-        height: auto; 
-        width: 50vw; 
+
+    .block {
+        min-height: 250px;
+        height: auto;
+        width: 50vw;
         background-color: #6c7dc7;
-        padding-left: 50px; 
-        padding-top: 20px; 
+        padding-left: 50px;
+        padding-top: 20px;
         color: rgb(0, 0, 0);
         font-weight: bold;
-        font-size: 1.2vw; 
+        font-size: 1.2vw;
     }
-    input{
+
+    input {
         border-radius: 20px;
         margin: 5px 0 0 1vw;
         width: auto;
@@ -192,11 +200,12 @@
         min-width: 7vw;
         height: 27px;
     }
-    button{
-        width: 10%; 
+
+    button {
+        width: 10%;
         float: right;
         width: 10vw;
-        height: 70px; 
+        height: 70px;
         margin: 5px 0 0 1vw;
         border-radius: 40px;
         color: rgb(255, 255, 255);
@@ -242,15 +251,19 @@
                 <input type="text" id="que_replace" placeholder="1">
             </div>
             <div id="cost">
-                <label>Максимальная цена:</label>
-                <input type="text" id="max_cost" style="margin-left: 140px;" placeholder="10000">
+                <div>
+                    <label>Максимальная цена:</label>
+                </div>
+                <div>
+                    <input type="text" id="max_cost" placeholder="10000">
+                </div>
             </div>
         </div>
-        
+
     </div>
 </div>
 
-<div id = "search_result"></div>
+<div id="search_result"></div>
 </body>
 
 </html>
