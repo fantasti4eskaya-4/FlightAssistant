@@ -172,48 +172,82 @@
         border-radius: 10px;
         margin: 5px;
     }
+    .block{
+        min-height: 250px; 
+        height: auto; 
+        width: 50vw; 
+        background-color: #6c7dc7;
+        padding-left: 50px; 
+        padding-top: 20px; 
+        color: rgb(0, 0, 0);
+        font-weight: bold;
+        font-size: 1.2vw; 
+    }
+    input{
+        border-radius: 20px;
+        margin: 5px 0 0 1vw;
+        width: auto;
+        text-align: center;
+        color: black;
+        min-width: 7vw;
+        height: 27px;
+    }
+    button{
+        width: 10%; 
+        float: right;
+        width: 10vw;
+        height: 70px; 
+        margin: 5px 0 0 1vw;
+        border-radius: 40px;
+        color: rgb(255, 255, 255);
+        background-color: green;
+        font-weight: bold;
+        font-size: 1.2vw;
+    }
 </style>
 
 <body>
+<div class="block">
+    <div class="head" style="display: flex; text-align: center;">
+        <div id="geo" style="display: flex;">
+            <div id="from">
+                <label>Откуда</label><br>
+                <input type="text" id="geo_from" placeholder="Москва">
+            </div>
+            <div id="to">
+                <label>Куда</label><br>
+                <input type="text" id="geo_to" placeholder="Москва">
+            </div>
 
-<div class="head" style="display: flex; text-align: center;">
-    <div id="geo" style="display: flex;">
-        <div id="from">
-            <label>Откуда:</label><br>
-            <input type="text" id="geo_from">
-        </div>
-        <div id="to">
-            <label>Куда:</label><br>
-            <input type="text" id="geo_to">
         </div>
 
+        <div id="date" style="display: flex; margin-left: 30px;">
+            <div id="from">
+                <label>Дата вылета</label><br>
+                <input type="date" id="date_from">
+            </div>
+            <div id="to">
+                <label>Дата обратно</label><br>
+                <input type="date" id="date_to">
+            </div>
+
+        </div>
     </div>
 
-    <div id="date" style="display: flex;">
-        <div id="from">
-            <label>Дата вылета:</label><br>
-            <input type="date" id="date_from">
+    <div class="prehead" style="padding-left: 15px; width: 40vw;">
+        <div class="someInfo">
+            <button onclick="sendData()">Найти</button>
+            <div id="replace">
+                <label>Максимальное число пересадок:</label>
+                <input type="text" id="que_replace" placeholder="1">
+            </div>
+            <div id="cost">
+                <label>Максимальная цена:</label>
+                <input type="text" id="max_cost" style="margin-left: 140px;" placeholder="10000">
+            </div>
         </div>
-        <div id="to">
-            <label>Дата обратно:</label><br>
-            <input type="date" id="date_to">
-        </div>
-
+        
     </div>
-</div>
-
-<div class="prehead" style="display: flex;">
-    <div class="someInfo">
-        <div id="replace">
-            <label>Максимальное число пересадок:</label><br>
-            <input type="text" id="que_replace">
-        </div>
-        <div id="cost">
-            <label>Максимальная цена:</label><br>
-            <input type="text" id="max_cost">
-        </div>
-    </div>
-    <button style="width: 5%;" onclick="sendData()">Найти</button>
 </div>
 
 <div id = "search_result"></div>
